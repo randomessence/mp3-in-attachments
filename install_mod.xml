@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[mp3 in attachments]]></title>
+		<description lang="en"><![CDATA[The easiest part!
+
+Open phpBB3 Admin Control Panel
+
+Go to the posting tab
+
+Under “Manage Extension Groups” add “Files MP3″, select the “MP3″ for a special category and any other settings that you like.
+
+Under “Manage Extensions” add “mp3″ under the group “files MP3″.
+
+Under “Manage Extensions” verify that the “MP3″ extension is filed under “Files MP3”.
+
+Step 5: MP3 BBCode
+
+Not necessary, only if you want to be able to move the flash player to different forums.
+Navigate to Posting BBcodes.
+
+BBCode usage
+
+	[mp3]{URL}[/mp3]
+
+HTML replacement
+
+
+	<object type="application/x-shockwave-flash" data="http://yourwebsiteurl.com/player.swf" id="audioplayer1" height="24" width="290">
+	<param name="movie" value="http://yourwebsiteurl.com/player.swf" />
+	<param name="FlashVars" value="playerID=1&soundFile={URL}" />
+	<param name="quality" value="high" />
+	<param name="menu" value="true" />
+	<param name="wmode" value="transparent" />
+	</object>
+
+Help Line
+
+	[mp3]URL to file[/mp3]
+
+That’s it!]]></description>
+		<author-group>
+			<author>
+				<username><![CDATA[randomessence]]></username>
+				<homepage><![CDATA[www.digikool.co.uk]]></homepage>
+				<email><![CDATA[digikool@mail.com]]></email>
+			</author>
+			<author>
+				<username phpbbcom="no"><![CDATA[http://qkin.com/]]></username>
+				<homepage><![CDATA[http://qkin.com/phpbb3-mp3-player/]]></homepage>
+			</author>
+		</author-group>
+		<mod-version>1.0.0</mod-version>
+		<installation>
+			<level>easy</level>
+		</installation>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/*.*" to="*.*"/>
+		</copy>
+		<open src="includes/constants.php">
+			<edit>
+				<find><![CDATA[define('ATTACHMENT_CATEGORY_QUICKTIME', 6); // Quicktime/Mov files]]></find>
+				<action type="after-add"><![CDATA[define('ATTACHMENT_CATEGORY_MP3', 7); // MP3 Files - Streaming]]></action>
+			</edit>
+		</open>
+		<open src="includes/functions_content.php">
+			<edit>
+				<find><![CDATA[				// Windows Media Streams
+				case ATTACHMENT_CATEGORY_WM:
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					// Giving the filename directly because within the wm object all variables are in local context making it impossible
+					// to validate against a valid session (all params can differ)
+					// $download_link = $filename;
+
+					$block_array += array(
+						'U_FORUM'		=> generate_board_url(),
+						'ATTACH_ID'		=> $attachment['attach_id'],
+						'S_WM_FILE'		=> true,
+					);
+
+					// Viewed/Heared File ... update the download count
+					$update_count[] = $attachment['attach_id'];
+				break;]]></find>
+				<action type="after-add"><![CDATA[				
+					// MP3 Streams
+	            case ATTACHMENT_CATEGORY_MP3:
+	               $l_downloaded_viewed = 'VIEWED_COUNT';
+	 
+	               $block_array += array(
+	                  'U_FORUM'      => generate_board_url(),
+	                  'ATTACH_ID'      => $attachment['attach_id'],
+	                  'S_MP3_FILE'      => true,
+	               );
+	 
+	               // Viewed/Heared File ... update the download count
+	               $update_count[] = $attachment['attach_id'];
+	            break;]]></action>
+			</edit>
+		</open>
+		<open src="includes/acp/acp_attachments.php">
+			<edit>
+				<find><![CDATA[				$cat_lang = array(
+					ATTACHMENT_CATEGORY_NONE		=> $user->lang['NO_FILE_CAT'],
+					ATTACHMENT_CATEGORY_IMAGE		=> $user->lang['CAT_IMAGES'],
+					ATTACHMENT_CATEGORY_WM			=> $user->lang['CAT_WM_FILES'],
+					ATTACHMENT_CATEGORY_RM			=> $user->lang['CAT_RM_FILES'],
+					ATTACHMENT_CATEGORY_FLASH		=> $user->lang['CAT_FLASH_FILES'],
+					ATTACHMENT_CATEGORY_QUICKTIME	=> $user->lang['CAT_QUICKTIME_FILES'],]]></find>
+				<action type="after-add"><![CDATA[					ATTACHMENT_CATEGORY_MP3         => $user->lang['CAT_MP3_FILES'],]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		$types = array(
+			ATTACHMENT_CATEGORY_NONE		=> $user->lang['NO_FILE_CAT'],
+			ATTACHMENT_CATEGORY_IMAGE		=> $user->lang['CAT_IMAGES'],
+			ATTACHMENT_CATEGORY_WM			=> $user->lang['CAT_WM_FILES'],
+			ATTACHMENT_CATEGORY_RM			=> $user->lang['CAT_RM_FILES'],
+			ATTACHMENT_CATEGORY_FLASH		=> $user->lang['CAT_FLASH_FILES'],
+			ATTACHMENT_CATEGORY_QUICKTIME	=> $user->lang['CAT_QUICKTIME_FILES'],]]></find>
+				<action type="after-add"><![CDATA[			ATTACHMENT_CATEGORY_MP3         => $user->lang['CAT_MP3_FILES'],]]></action>
+			</edit>
+		</open>
+		<open src="language/en/acp/attachments.php">
+			<edit>
+				<find><![CDATA['CAT_QUICKTIME_FILES'		=> 'Quicktime media files',]]></find>
+				<action type="after-add"><![CDATA['CAT_MP3_FILES' => 'MP3',]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/attachment.html">
+			<edit>
+				<find><![CDATA[	<script type="text/javascript">
+	            // ]]>&lt;![CDATA[<![CDATA[
+	                if (document.rmstream_{_file.ATTACH_ID}.GetClipWidth)
+	                {
+	                    while (!document.rmstream_{_file.ATTACH_ID}.GetClipWidth())
+	                    {
+	                    }
+	 
+	                    var width = document.rmstream_{_file.ATTACH_ID}.GetClipWidth();
+	                    var height = document.rmstream_{_file.ATTACH_ID}.GetClipHeight();
+	 
+	                    document.rmstream_{_file.ATTACH_ID}.width = width;
+	                    document.rmstream_{_file.ATTACH_ID}.height = height;
+	                    document.ctrls_{_file.ATTACH_ID}.width = width;
+	                }
+	            // ]]>]]&gt;<![CDATA[
+	            </script>]]></find>
+				<action type="after-add"><![CDATA[	 <!-- ELSEIF _file.S_MP3_FILE -->
+	 
+	<object type="application/x-shockwave-flash" data="mediaplayer/mp3player/player.swf" id="audioplayer1" height="24" width="290">
+	<param name="movie" value="mediaplayer/mp3player/player.swf" />
+	<param name="FlashVars" value="playerID=1&soundFile={_file.U_DOWNLOAD_LINK}" />
+	<param name="quality" value="high" />
+	<param name="menu" value="true" />
+	<param name="wmode" value="transparent" />
+	</object><br/>
+	<span class="gensmall">
+	    <!-- IF _file.UPLOAD_ICON -->{_file.UPLOAD_ICON} <!-- ENDIF -->
+	 
+	<a href="{_file.U_DOWNLOAD_LINK}">{_file.DOWNLOAD_NAME}</a><br/> [ {_file.FILESIZE} {_file.SIZE_LANG} | {_file.L_DOWNLOAD_COUNT} ] </span>]]></action>
+			</edit>
+		</open>
+		<diy-instructions lang="en"><![CDATA[The easiest part!
+
+Open phpBB3 Admin Control Panel
+
+Go to the posting tab
+
+Under “Manage Extension Groups” add “Files MP3″, select the “MP3″ for a special category and any other settings that you like.
+
+Under “Manage Extensions” add “mp3″ under the group “files MP3″.
+
+Under “Manage Extensions” verify that the “MP3″ extension is filed under “Files MP3”.
+
+Step 5: MP3 BBCode
+
+Not necessary, only if you want to be able to move the flash player to different forums.
+Navigate to Posting BBcodes.
+
+BBCode usage
+
+	[mp3]{URL}[/mp3]
+
+HTML replacement
+
+
+	<object type="application/x-shockwave-flash" data="http://yourwebsiteurl.com/player.swf" id="audioplayer1" height="24" width="290">
+	<param name="movie" value="http://yourwebsiteurl.com/player.swf" />
+	<param name="FlashVars" value="playerID=1&soundFile={URL}" />
+	<param name="quality" value="high" />
+	<param name="menu" value="true" />
+	<param name="wmode" value="transparent" />
+	</object>
+
+Help Line
+
+	[mp3]URL to file[/mp3]
+
+That’s it!]]></diy-instructions>
+	</action-group>
+</mod>
